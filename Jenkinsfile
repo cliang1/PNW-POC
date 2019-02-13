@@ -20,9 +20,6 @@ node {
 
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
     
-    stages {
-
-
         stage('Initialize Variables') {
             when {
                 branch 'dev' 
@@ -60,7 +57,5 @@ node {
         stage('Deploying') {
             rc = bat returnStatus: true, script: "\"${toolbelt}\" force:mdapi:deploy -d ./metadataFormat -u ${HUB_ORG} -w 5"            
             if (rc != 0) { error 'deployment failed' }
-        }
-        
-    }
+        }     
 }
