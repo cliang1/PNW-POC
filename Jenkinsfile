@@ -30,7 +30,7 @@ node {
 
         stage('Convert Source Format to Metadata') {
             println('Hello there!')
-            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:source:convert -r . -d ./metadataFormat"            
+            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:source:convert -r ./force-app/ -d ./metadataFormat"            
             if (rc != 0) { error 'convert to metadata format failed' }
             println('Hello there, again!')
 
