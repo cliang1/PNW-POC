@@ -21,27 +21,18 @@ node {
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
 
         stage('Authorize Org') {
-            println('Hello there!')
             rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"            
-            if (rc != 0) { error 'hub org authorization failed' }
-            println('Hello there, again!')
-
+            if (rc != 0) { error 'hub org authorization failed' }            
         }
 
-        stage('Convert Source Format to Metadata') {
-            println('Hello there!')
+        stage('Convert Source to Metadata Format') {
             rc = bat returnStatus: true, script: "\"${toolbelt}\" force:source:convert -r ./force-app/ -d ./metadataFormat"            
             if (rc != 0) { error 'convert to metadata format failed' }
-            println('Hello there, again!')
-
         }
 
         stage('Deploy to Dev') {
-            println('Hello there!')
-            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:mdapi:deploy -c -d ./metadataFormat -w 5 -u ${HUB_ORG}"            
+            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:mdapi:deploy -c -d ./metadataFormat -u ${HUB_ORG} -w 5"            
             if (rc != 0) { error 'deploy to dev failed' }
-            println('Hello there, again!')
-
         }
 
     }
