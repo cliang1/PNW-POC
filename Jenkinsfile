@@ -19,20 +19,45 @@ node {
     }
 
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
+stages {
+
+}
+        stage('Initialize Variables') {
+            when {
+                branch 'dev' 
+            }
+            steps {
+                echo 'Hello from dev' 
+                //HUB_ORG_DH = Jenkins Username or Org Alias
+                //CONNECTED_APP_CONSUMER_KEY_DH = Dev Consumer Key
+            }
+        }
+        stage('Initializing Variables') {
+            when {
+                branch 'test'  
+            }
+            steps {
+                echo 'Hello from test' 
+                //HUB_ORG_DH = Jenkins Username or Org Alias
+                //CONNECTED_APP_CONSUMER_KEY_DH = test Consumer Key
+            }
+        }
 
         stage('Authorize Org') {
             rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"            
             if (rc != 0) { error 'hub org authorization failed' }            
         }
 
+        //Creates directory called metadataFormat and converts sfdx project source code to metadata format
         stage('Convert Source to Metadata Format') {
             rc = bat returnStatus: true, script: "\"${toolbelt}\" force:source:convert -r ./force-app/ -d ./metadataFormat"            
             if (rc != 0) { error 'convert to metadata format failed' }
         }
 
-        stage('Deploy to Dev') {
+        //Deploys from metadataFormat directory to environment
+        stage('Deploying') {
             rc = bat returnStatus: true, script: "\"${toolbelt}\" force:mdapi:deploy -d ./metadataFormat -u ${HUB_ORG} -w 5"            
-            if (rc != 0) { error 'deploy to dev failed' }
+            if (rc != 0) { error 'deployment failed' }
         }
 
     }
