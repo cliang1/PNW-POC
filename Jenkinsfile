@@ -31,7 +31,7 @@ node {
         }
 
         stage('Deploy to Dev') {
-            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:mdapi:deploy -c -d ./metadataFormat -u ${HUB_ORG} -w 5"            
+            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:mdapi:deploy -d ./metadataFormat -u ${HUB_ORG} -w 5"            
             if (rc != 0) { error 'deploy to dev failed' }
         }
 
