@@ -20,10 +20,18 @@ node {
 
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
 
-        stage('Convert Source Format to Metadata') {
+        stage('Authorize Org') {
             println('Hello there!')
             rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"            
             if (rc != 0) { error 'hub org authorization failed' }
+            println('Hello there, again!')
+
+        }
+
+        stage('Convert Source Format to Metadata') {
+            println('Hello there!')
+            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:source:convert -r . -d ./metadataFormat"            
+            if (rc != 0) { error 'convert to metadata format failed' }
             println('Hello there, again!')
 
         }
