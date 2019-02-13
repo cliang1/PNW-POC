@@ -36,5 +36,13 @@ node {
 
         }
 
+        stage('Deploy to Dev') {
+            println('Hello there!')
+            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:mdapi:deploy -c -d ./metadataFormat -w 5 -u ${HUB_ORG}"            
+            if (rc != 0) { error 'deploy to dev failed' }
+            println('Hello there, again!')
+
+        }
+
     }
 }
