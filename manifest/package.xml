@@ -48,10 +48,13 @@
         <members>*</members>
         <name>ListView</name>
     </types>        
+<!--
+Issues deploying assignentRule when username changed in org.
     <types>
         <members>*</members>
         <name>AssignmentRules</name>
     </types>        
+-->    
     <types>
         <members>*</members>
         <name>SharingCriteriaRule</name>
