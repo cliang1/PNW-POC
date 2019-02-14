@@ -28,7 +28,6 @@ node {
         }
 
         stage('Convert Source to Metadata Format') {
-            rmdir ./metadataFormat
             rc = bat returnStatus: true, script: "\"${toolbelt}\" force:source:convert -r ./force-app/ -d ./metadataFormat"            
             if (rc != 0) { error 'convert to metadata format failed' }
         }
