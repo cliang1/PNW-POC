@@ -67,9 +67,12 @@ Issues deploying assignentRule when username changed in org.
         <members>*</members>
         <name>SharingTerritoryRule</name>
     </types>
+<!--
+Removed profiles as this can be deployed manually by admins.
     <types>
         <members>*</members>
         <name>Profile</name>
     </types>
+-->        
     <version>45.0</version>
 </Package>
