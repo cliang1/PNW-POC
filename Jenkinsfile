@@ -2,14 +2,10 @@
 import groovy.json.JsonSlurperClassic
 node {
 
-    def BUILD_NUMBER=env.BUILD_NUMBER
-    def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
-    def SFDC_USERNAME
-
-    def HUB_ORG=env.HUB_ORG_DEV
     def SFDC_HOST = env.SFDC_HOST
     def JWT_KEY_CRED_ID = env.JWT_CRED_ID
-    def CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DEV
+    def HUB_ORG
+    def CONNECTED_APP_CONSUMER_KEY
 
     def toolbelt = tool 'toolbelt'
 
@@ -20,17 +16,21 @@ node {
 
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
 		
-		echo 'Hello'
-
          if (env.BRANCH_NAME == 'dev') {
             echo 'I only execute on the dev branch'
+            HUB_ORG=env.HUB_ORG_DEV
+            CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DEV
         } else if (env.BRANCH_NAME == 'test') {
             echo 'I only execute on the test branch'
+            HUB_ORG=env.HUB_ORG_TEST            
+            CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_TEST
         } else if (env.BRANCH_NAME == 'stage') {
             echo 'I only execute on the stage branch'
         } else {
             echo 'I only execute if not on the dev, test, or stage branch'
             echo env.BRANCH_NAME
+            HUB_ORG=env.HUB_ORG_DEV
+            CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DEV
         }
         
         stage('Authorize Org') {
@@ -47,8 +47,5 @@ node {
             rc = bat returnStatus: true, script: "\"${toolbelt}\" force:mdapi:deploy -d ./metadataFormat -u ${HUB_ORG} -w 5"            
             if (rc != 0) { error 'deploy to dev failed' }
         }
-
-        echo 'Bye'
-
     }
 }
