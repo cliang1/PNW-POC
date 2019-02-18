@@ -33,19 +33,21 @@ node {
             CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DEV
         }
         
-        stage('Authorize Org') {
-            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"            
-            if (rc != 0) { error 'hub org authorization failed' }            
-        }
+        if (env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'test' || env.BRANCH_NAME == 'stage') {
+            stage('Authorize Org') {
+                rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"            
+                if (rc != 0) { error 'hub org authorization failed' }            
+            }
 
-        stage('Convert Source to Metadata Format') {
-            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:source:convert -r ./force-app/ -d ./metadataFormat"            
-            if (rc != 0) { error 'convert to metadata format failed' }
-        }
+            stage('Convert Source to Metadata Format') {
+                rc = bat returnStatus: true, script: "\"${toolbelt}\" force:source:convert -r ./force-app/ -d ./metadataFormat"            
+                if (rc != 0) { error 'convert to metadata format failed' }
+            }
 
-        stage('Deploy to Dev') {
-            rc = bat returnStatus: true, script: "\"${toolbelt}\" force:mdapi:deploy -d ./metadataFormat -u ${HUB_ORG} -w 5"            
-            if (rc != 0) { error 'deploy to dev failed' }
+            stage('Deploy to Dev') {
+                rc = bat returnStatus: true, script: "\"${toolbelt}\" force:mdapi:deploy -d ./metadataFormat -u ${HUB_ORG} -w 5"            
+                if (rc != 0) { error 'deploy to dev failed' }
+            }
         }
     }
 }
