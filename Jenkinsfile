@@ -30,6 +30,7 @@ node {
             echo 'I only execute on the stage branch'
         } else {
             echo 'I only execute if not on the dev, test, or stage branch'
+            echo env.BRANCH_NAME
         }
         
         stage('Authorize Org') {
