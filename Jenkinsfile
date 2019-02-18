@@ -21,6 +21,16 @@ node {
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
 		
 		echo 'Hello'
+
+         if (env.BRANCH_NAME == 'dev') {
+            echo 'I only execute on the dev branch'
+        } else if (env.BRANCH_NAME == 'test') {
+            echo 'I only execute on the test branch'
+        } else if (env.BRANCH_NAME == 'stage') {
+            echo 'I only execute on the stage branch'
+        } else {
+            echo 'I only execute if not on the dev, test, or stage branch'
+        }
         
         stage('Authorize Org') {
             rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"            
