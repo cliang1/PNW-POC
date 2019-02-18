@@ -26,11 +26,6 @@ node {
             CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_TEST
         } else if (env.BRANCH_NAME == 'stage') {
             echo 'I only execute on the stage branch'
-        } else {
-            echo 'I only execute if not on the dev, test, or stage branch'
-            echo env.BRANCH_NAME
-            HUB_ORG=env.HUB_ORG_DEV
-            CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DEV
         }
         
         if (env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'test' || env.BRANCH_NAME == 'stage') {
